@@ -1,0 +1,1 @@
+Demonstrates cutout handling via iOS api's for various coachmark tutorial setups.
