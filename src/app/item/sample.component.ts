@@ -12,16 +12,16 @@ export class SampleComponent {
 
     loaded(args) {
         const grid = args.object;
-        let pathBigRect = UIBezierPath.bezierPathWithRect(
-            CGRectMake(0, 0, 450, 850)
+        const baseLayerPath = UIBezierPath.bezierPathWithRect(
+            CGRectMake(0, 0, screen.mainScreen.widthDIPs, screen.mainScreen.heightDIPs)
         );
-        let pathSmallRect = this._createCutOut("circle", 10, 200, 100, 100);
+        const cutout = this._createCutOut("circle", 10, 200, 100, 100);
 
-        pathBigRect.appendPath(pathSmallRect);
-        pathBigRect.usesEvenOddFillRule = true;
+        baseLayerPath.appendPath(cutout);
+        baseLayerPath.usesEvenOddFillRule = true;
 
         let maskLayer = CAShapeLayer.layer();
-        maskLayer.path = pathBigRect.CGPath;
+        maskLayer.path = baseLayerPath.CGPath;
         maskLayer.fillRule = kCAFillRuleEvenOdd;
         maskLayer.fillColor = UIColor.colorWithRedGreenBlueAlpha(
             0,
@@ -91,18 +91,17 @@ export class SampleComponent {
         duration: number,
         cutout: UIBezierPath
     ) {
-        let animation = CABasicAnimation.animationWithKeyPath("path");
+        const animation = CABasicAnimation.animationWithKeyPath("path");
         animation.duration = duration;
 
-        // Your new shape here
-        let pathBigRect = UIBezierPath.bezierPathWithRect(
-            CGRectMake(0, 0, 450, 850)
+        const baseLayerPath = UIBezierPath.bezierPathWithRect(
+            CGRectMake(0, 0, screen.mainScreen.widthDIPs, screen.mainScreen.heightDIPs)
         );
+        // cut a hole in it with a new shape
+        baseLayerPath.appendPath(cutout);
+        baseLayerPath.usesEvenOddFillRule = true;
 
-        pathBigRect.appendPath(cutout);
-        pathBigRect.usesEvenOddFillRule = true;
-
-        animation.toValue = pathBigRect.CGPath;
+        animation.toValue = baseLayerPath.CGPath;
         animation.timingFunction = CAMediaTimingFunction.functionWithName(
             kCAMediaTimingFunctionEaseOut
         );
